@@ -1,0 +1,2 @@
+f:\work\vcpkg\installed\x64-windows\tools\protobuf\protoc --plugin=protoc-gen-grpc=f:\work\vcpkg\installed\x64-windows\tools\grpc\grpc_cpp_plugin.exe --grpc_out=. ./grpc/service.proto
+f:\work\vcpkg\installed\x64-windows\tools\protobuf\protoc --cpp_out=. ./grpc/service.proto
