@@ -22,6 +22,7 @@
 
 static const char* Greeter_method_names[] = {
   "/Greeter/SayHello",
+  "/Greeter/Command",
 };
 
 std::unique_ptr< Greeter::Stub> Greeter::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -32,6 +33,7 @@ std::unique_ptr< Greeter::Stub> Greeter::NewStub(const std::shared_ptr< ::grpc::
 
 Greeter::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   : channel_(channel), rpcmethod_SayHello_(Greeter_method_names[0], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_Command_(Greeter_method_names[1], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status Greeter::Stub::SayHello(::grpc::ClientContext* context, const ::HelloRequest& request, ::HelloReply* response) {
@@ -57,6 +59,29 @@ void Greeter::Stub::experimental_async::SayHello(::grpc::ClientContext* context,
   return result;
 }
 
+::grpc::Status Greeter::Stub::Command(::grpc::ClientContext* context, const ::CommandRequest& request, ::CommandReply* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::CommandRequest, ::CommandReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_Command_, context, request, response);
+}
+
+void Greeter::Stub::experimental_async::Command(::grpc::ClientContext* context, const ::CommandRequest* request, ::CommandReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::CommandRequest, ::CommandReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_Command_, context, request, response, std::move(f));
+}
+
+void Greeter::Stub::experimental_async::Command(::grpc::ClientContext* context, const ::CommandRequest* request, ::CommandReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_Command_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::CommandReply>* Greeter::Stub::PrepareAsyncCommandRaw(::grpc::ClientContext* context, const ::CommandRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::CommandReply, ::CommandRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_Command_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::CommandReply>* Greeter::Stub::AsyncCommandRaw(::grpc::ClientContext* context, const ::CommandRequest& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncCommandRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
 Greeter::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       Greeter_method_names[0],
@@ -68,12 +93,29 @@ Greeter::Service::Service() {
              ::HelloReply* resp) {
                return service->SayHello(ctx, req, resp);
              }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      Greeter_method_names[1],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< Greeter::Service, ::CommandRequest, ::CommandReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](Greeter::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::CommandRequest* req,
+             ::CommandReply* resp) {
+               return service->Command(ctx, req, resp);
+             }, this)));
 }
 
 Greeter::Service::~Service() {
 }
 
 ::grpc::Status Greeter::Service::SayHello(::grpc::ServerContext* context, const ::HelloRequest* request, ::HelloReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status Greeter::Service::Command(::grpc::ServerContext* context, const ::CommandRequest* request, ::CommandReply* response) {
   (void) context;
   (void) request;
   (void) response;

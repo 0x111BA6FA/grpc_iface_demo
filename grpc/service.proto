@@ -3,18 +3,29 @@ syntax = 'proto3';
 // The greeting service definition.
 service Greeter
 {
-  // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
+	// Sends a greeting
+	rpc SayHello (HelloRequest) returns (HelloReply) {}
+	rpc Command (CommandRequest) returns (CommandReply) {}
+}
+
+message CommandRequest
+{
+	string request = 1;
+}
+
+message CommandReply
+{
+	string reply = 1;
 }
 
 // The request message containing the user's name.
 message HelloRequest
 {
-  string name = 1;
+	string name = 1;
 }
 
 // The response message containing the greetings
 message HelloReply
 {
-  string message = 1;
+	string message = 1;
 }

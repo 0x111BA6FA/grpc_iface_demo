@@ -27,6 +27,10 @@
 // - можно контролирвоать также и здесь этот счетчик просто пока что
 // - клиент запускается через командную строку и указывается id потока, который он получает
 
+// вообще, подразумевается, что это хранится на сервере в виде файла и конфигурация читается каждый раз при выполнении команды
+// сейчас просто забиваю так
+const QString g_ServersList = "192.168.0.1:50051\n192.168.0.2:50051\n192.168.0.3:50051";
+
 class ProcessorThread;
 class GRPCServerThread;
 class InputThread;
@@ -40,7 +44,11 @@ struct ServerStruct
 	// хэш обрабатываемых id потоков и лок для работы с ним
 	QHash< int, ProcessorThread* > m_ProcessorHash;
 	QReadWriteLock m_ProcessorHashLock;
-	//
+	// для обработки команд заводим отдельный параллельный лист id, чтобы не мешать командами потоку обрбаотки
+	QList<int> m_ProcessorIdList;
+	QReadWriteLock m_ProcessorIdListLock;
+	
+	// входной поток и поток gRPC сервера
 	GRPCServerThread* m_GRPCServerThread = nullptr;
 	InputThread* m_InputThread = nullptr;	
 };
@@ -54,6 +62,45 @@ class GRPCServiceImpl final : public Greeter::Service
 		response->set_message(request_string.toStdString());
 		return grpc::Status::OK;
 	}
+	
+	grpc::Status Command(grpc::ServerContext* context, const CommandRequest* request, CommandReply* response) override
+	{
+		const QString cmd(request->request().c_str());
+		
+		// вообще тут удобнее все использовать будет JSON для передачи всяких разных команд и структур, ну пока так
+		
+		if( cmd.toLower() == "servers list" )
+		{
+			// обрабатываем известную команду и посылаем лист серверов команду
+			response->set_reply( g_ServersList.toStdString() );
+		}
+		else if( cmd.toLower() == "id list" )
+		{
+			// команда на получение списка всех обрабатываемых id данным сервером
+			QList<int> id_list;
+			{
+				QReadLocker l(&m_ServerStruct->m_ProcessorIdListLock);
+				id_list = m_ServerStruct->m_ProcessorIdList;
+			}
+			
+			QString result;
+			for( int id : id_list )
+			{
+				if( !result.isEmpty() ) result += ",";
+				result += QString::number(id);
+			}
+		}
+		else
+		{
+			// неизвевестная команда не была обработана - сообщаем
+			response->set_reply( "unknown command" );
+		}
+		
+		return grpc::Status::OK;
+	}
+	
+public:
+	ServerStruct* m_ServerStruct = nullptr;
 };
 
 class GRPCServerThread : public QThread
@@ -62,6 +109,7 @@ class GRPCServerThread : public QThread
 	{
 		std::string server_address(QString("0.0.0.0:%1").arg(m_Port).toStdString());
 		GRPCServiceImpl service;
+		service.m_ServerStruct = m_ServerStruct;
 		
 		grpc::EnableDefaultHealthCheckService(true);
 		grpc::reflection::InitProtoReflectionServerBuilderPlugin();
@@ -76,9 +124,10 @@ class GRPCServerThread : public QThread
 		//exec();
 	}
 public:
-	GRPCServerThread(uint16_t port) : m_Port(port) {}
+	GRPCServerThread(ServerStruct* s, uint16_t port) : m_Port(port), m_ServerStruct(s) {}
 	std::unique_ptr<grpc::Server> m_Server = nullptr;
 	const uint16_t m_Port;
+	ServerStruct* const m_ServerStruct = nullptr;	// для передачи в обработку потоку gRPC, для примера, как по-хорошему все это организовать будет видно
 };
 
 
@@ -229,6 +278,13 @@ class InputThread : public QThread
 						const QWriteLocker l( &m_ServerStruct->m_ProcessorHashLock );
 						m_ServerStruct->m_ProcessorHash[id] = p_context;
 					}
+					
+					{
+						// заносим id в паралелльный хэшу лист для мониторинга
+						const QWriteLocker l( &m_ServerStruct->m_ProcessorIdListLock );
+						m_ServerStruct->m_ProcessorIdList << id;
+					}
+					
 					// приемный контекст запоминает контекст обрбаотчика
 					input_context->m_ProcessorThread = p_context;
 					// запускаем контекст новый поток-контекст обработки
@@ -302,7 +358,7 @@ public:
 
 ServerStruct::ServerStruct(int port, const QList<int>& id_list):
 	m_InputThread( new InputThread( this, id_list ) )
-	, m_GRPCServerThread( new GRPCServerThread(port) )
+	, m_GRPCServerThread( new GRPCServerThread( this, port ) )
 {
 	m_GRPCServerThread->start();		
 	m_InputThread->start();

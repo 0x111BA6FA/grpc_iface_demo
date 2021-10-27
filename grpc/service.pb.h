@@ -46,13 +46,19 @@ struct TableStruct_grpc_2fservice_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[2]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[4]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
   static const ::PROTOBUF_NAMESPACE_ID::uint32 offsets[];
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_grpc_2fservice_2eproto;
+class CommandReply;
+struct CommandReplyDefaultTypeInternal;
+extern CommandReplyDefaultTypeInternal _CommandReply_default_instance_;
+class CommandRequest;
+struct CommandRequestDefaultTypeInternal;
+extern CommandRequestDefaultTypeInternal _CommandRequest_default_instance_;
 class HelloReply;
 struct HelloReplyDefaultTypeInternal;
 extern HelloReplyDefaultTypeInternal _HelloReply_default_instance_;
@@ -60,11 +66,309 @@ class HelloRequest;
 struct HelloRequestDefaultTypeInternal;
 extern HelloRequestDefaultTypeInternal _HelloRequest_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
+template<> ::CommandReply* Arena::CreateMaybeMessage<::CommandReply>(Arena*);
+template<> ::CommandRequest* Arena::CreateMaybeMessage<::CommandRequest>(Arena*);
 template<> ::HelloReply* Arena::CreateMaybeMessage<::HelloReply>(Arena*);
 template<> ::HelloRequest* Arena::CreateMaybeMessage<::HelloRequest>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
+
+class CommandRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CommandRequest) */ {
+ public:
+  inline CommandRequest() : CommandRequest(nullptr) {}
+  ~CommandRequest() override;
+  explicit constexpr CommandRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CommandRequest(const CommandRequest& from);
+  CommandRequest(CommandRequest&& from) noexcept
+    : CommandRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline CommandRequest& operator=(const CommandRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CommandRequest& operator=(CommandRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CommandRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CommandRequest* internal_default_instance() {
+    return reinterpret_cast<const CommandRequest*>(
+               &_CommandRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    0;
+
+  friend void swap(CommandRequest& a, CommandRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CommandRequest* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CommandRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline CommandRequest* New() const final {
+    return new CommandRequest();
+  }
+
+  CommandRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<CommandRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CommandRequest& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const CommandRequest& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CommandRequest* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CommandRequest";
+  }
+  protected:
+  explicit CommandRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kRequestFieldNumber = 1,
+  };
+  // string request = 1;
+  void clear_request();
+  const std::string& request() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_request(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_request();
+  PROTOBUF_MUST_USE_RESULT std::string* release_request();
+  void set_allocated_request(std::string* request);
+  private:
+  const std::string& _internal_request() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_request(const std::string& value);
+  std::string* _internal_mutable_request();
+  public:
+
+  // @@protoc_insertion_point(class_scope:CommandRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr request_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_grpc_2fservice_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CommandReply final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CommandReply) */ {
+ public:
+  inline CommandReply() : CommandReply(nullptr) {}
+  ~CommandReply() override;
+  explicit constexpr CommandReply(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CommandReply(const CommandReply& from);
+  CommandReply(CommandReply&& from) noexcept
+    : CommandReply() {
+    *this = ::std::move(from);
+  }
+
+  inline CommandReply& operator=(const CommandReply& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CommandReply& operator=(CommandReply&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CommandReply& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CommandReply* internal_default_instance() {
+    return reinterpret_cast<const CommandReply*>(
+               &_CommandReply_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    1;
+
+  friend void swap(CommandReply& a, CommandReply& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CommandReply* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CommandReply* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline CommandReply* New() const final {
+    return new CommandReply();
+  }
+
+  CommandReply* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<CommandReply>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CommandReply& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const CommandReply& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CommandReply* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CommandReply";
+  }
+  protected:
+  explicit CommandReply(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kReplyFieldNumber = 1,
+  };
+  // string reply = 1;
+  void clear_reply();
+  const std::string& reply() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_reply(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_reply();
+  PROTOBUF_MUST_USE_RESULT std::string* release_reply();
+  void set_allocated_reply(std::string* reply);
+  private:
+  const std::string& _internal_reply() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_reply(const std::string& value);
+  std::string* _internal_mutable_reply();
+  public:
+
+  // @@protoc_insertion_point(class_scope:CommandReply)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr reply_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_grpc_2fservice_2eproto;
+};
+// -------------------------------------------------------------------
 
 class HelloRequest final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:HelloRequest) */ {
@@ -114,7 +418,7 @@ class HelloRequest final :
                &_HelloRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    0;
+    2;
 
   friend void swap(HelloRequest& a, HelloRequest& b) {
     a.Swap(&b);
@@ -262,7 +566,7 @@ class HelloReply final :
                &_HelloReply_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    1;
+    3;
 
   friend void swap(HelloReply& a, HelloReply& b) {
     a.Swap(&b);
@@ -369,6 +673,106 @@ class HelloReply final :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
+// CommandRequest
+
+// string request = 1;
+inline void CommandRequest::clear_request() {
+  request_.ClearToEmpty();
+}
+inline const std::string& CommandRequest::request() const {
+  // @@protoc_insertion_point(field_get:CommandRequest.request)
+  return _internal_request();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CommandRequest::set_request(ArgT0&& arg0, ArgT... args) {
+ 
+ request_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CommandRequest.request)
+}
+inline std::string* CommandRequest::mutable_request() {
+  std::string* _s = _internal_mutable_request();
+  // @@protoc_insertion_point(field_mutable:CommandRequest.request)
+  return _s;
+}
+inline const std::string& CommandRequest::_internal_request() const {
+  return request_.Get();
+}
+inline void CommandRequest::_internal_set_request(const std::string& value) {
+  
+  request_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* CommandRequest::_internal_mutable_request() {
+  
+  return request_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* CommandRequest::release_request() {
+  // @@protoc_insertion_point(field_release:CommandRequest.request)
+  return request_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void CommandRequest::set_allocated_request(std::string* request) {
+  if (request != nullptr) {
+    
+  } else {
+    
+  }
+  request_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), request,
+      GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set_allocated:CommandRequest.request)
+}
+
+// -------------------------------------------------------------------
+
+// CommandReply
+
+// string reply = 1;
+inline void CommandReply::clear_reply() {
+  reply_.ClearToEmpty();
+}
+inline const std::string& CommandReply::reply() const {
+  // @@protoc_insertion_point(field_get:CommandReply.reply)
+  return _internal_reply();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CommandReply::set_reply(ArgT0&& arg0, ArgT... args) {
+ 
+ reply_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CommandReply.reply)
+}
+inline std::string* CommandReply::mutable_reply() {
+  std::string* _s = _internal_mutable_reply();
+  // @@protoc_insertion_point(field_mutable:CommandReply.reply)
+  return _s;
+}
+inline const std::string& CommandReply::_internal_reply() const {
+  return reply_.Get();
+}
+inline void CommandReply::_internal_set_reply(const std::string& value) {
+  
+  reply_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* CommandReply::_internal_mutable_reply() {
+  
+  return reply_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* CommandReply::release_reply() {
+  // @@protoc_insertion_point(field_release:CommandReply.reply)
+  return reply_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void CommandReply::set_allocated_reply(std::string* reply) {
+  if (reply != nullptr) {
+    
+  } else {
+    
+  }
+  reply_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), reply,
+      GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set_allocated:CommandReply.reply)
+}
+
+// -------------------------------------------------------------------
+
 // HelloRequest
 
 // string name = 1;
@@ -470,6 +874,10 @@ inline void HelloReply::set_allocated_message(std::string* message) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 
