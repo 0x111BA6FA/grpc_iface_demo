@@ -15,8 +15,8 @@
 // часть сервер
 // + сделать поток сервера, который забирает данные из очередей ввода
 //		каждый id на отдельном потоке? допустим да
-// - прилинковать grpc к проекту
-// - написать интерфейс grpc, сделать генерацию файлов при сборке проекта
+// + прилинковать grpc к проекту
+// - написать интерфейс grpc, сделать генерацию файлов при сборке проекта (опционально)
 // - запуск сервера через командную строку, ему передаются id принимаемых потоков
 //
 // часть клиента (другое приложение)
@@ -30,13 +30,28 @@ class GRPCServiceImpl final : public Greeter::Service
 	grpc::Status SayHello(grpc::ServerContext* context, const HelloRequest* request, HelloReply* response) override
 	{
 		QString request_string = request->name().c_str();
-		request_string.append("added by server");
+		request_string.append(" added by server");
 		response->set_message(request_string.toStdString());
 		return grpc::Status::OK;
 	}
-public:
-	GRPCServiceImpl(){}
-	~GRPCServiceImpl(){}
+};
+
+class GRPCServerThread : public QThread
+{
+	void run() override
+	{
+		std::string server_address("0.0.0.0:50051");
+		GRPCServiceImpl service;
+		
+		grpc::ServerBuilder builder;
+		builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
+		builder.RegisterService(&service);
+		std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
+		std::cout << "Server listening on " << server_address << std::endl;
+		server->Wait();
+		
+		//exec();
+	}
 };
 
 
@@ -74,13 +89,13 @@ class ProcessorThread : public QThread
 			const uint64_t current_tick = GetTickCount64();
 			const uint64_t dt = current_tick - m_LastTick;
 			const double speed = ((double)m_ProcessedSinceLastTick/dt)/1024/1024*8*1000; // МБит/с
-			qDebug() << 
+			/*qDebug() << 
 				QString("processthread %1 iteration Total/Err: %2/%3 Speed: %4 Mb/s")
 					.arg( m_Id )
 					.arg( m_Stat[StatTotalProcessed] )
 					.arg( m_Stat[StatTotalErrors] )
 					.arg( speed )
-			;			
+			;*/		
 			m_LastTick = current_tick;
 			m_ProcessedSinceLastTick = 0;
 			
@@ -135,20 +150,13 @@ struct ServerStruct
 {
 	ServerStruct()
 	{
-		std::string server_address("0.0.0.0:50051");
-		GRPCServiceImpl service;
-		
-		grpc::ServerBuilder builder;
-		builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
-		builder.RegisterService(&service);
-		std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
-		std::cout << "Server listening on " << server_address << std::endl;
-		server->Wait();
+		m_GRPCServerThread.start();
 	}
 	
 	// хэш обрабатываемых id потоков и лок для работы с ним
 	QHash< int, ProcessorThread* > m_ProcessorHash;
 	QReadWriteLock m_ProcessorHashLock;
+	GRPCServerThread m_GRPCServerThread;	
 };
 
 struct InputContext
