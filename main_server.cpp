@@ -2,7 +2,9 @@
 #include <windows.h>	// только для замера скорости с помощью getTickCount64
 
 
-#include <grpcpp/server_builder.h>
+#include <grpcpp/ext/proto_server_reflection_plugin.h>
+#include <grpcpp/grpcpp.h>
+#include <grpcpp/health_check_service_interface.h>
 #include "grpc/service.grpc.pb.h"
 
 // TODO
@@ -25,6 +27,24 @@
 // - можно контролирвоать также и здесь этот счетчик просто пока что
 // - клиент запускается через командную строку и указывается id потока, который он получает
 
+class ProcessorThread;
+class GRPCServerThread;
+class InputThread;
+
+// самая важная структура сервера, хранит в себе процессоры обраотки и все все все
+struct ServerStruct
+{
+	ServerStruct(int, const QList<int>&);
+	~ServerStruct();
+	
+	// хэш обрабатываемых id потоков и лок для работы с ним
+	QHash< int, ProcessorThread* > m_ProcessorHash;
+	QReadWriteLock m_ProcessorHashLock;
+	//
+	GRPCServerThread* m_GRPCServerThread = nullptr;
+	InputThread* m_InputThread = nullptr;	
+};
+
 class GRPCServiceImpl final : public Greeter::Service
 {
 	grpc::Status SayHello(grpc::ServerContext* context, const HelloRequest* request, HelloReply* response) override
@@ -40,18 +60,25 @@ class GRPCServerThread : public QThread
 {
 	void run() override
 	{
-		std::string server_address("0.0.0.0:50051");
+		std::string server_address(QString("0.0.0.0:%1").arg(m_Port).toStdString());
 		GRPCServiceImpl service;
+		
+		grpc::EnableDefaultHealthCheckService(true);
+		grpc::reflection::InitProtoReflectionServerBuilderPlugin();
 		
 		grpc::ServerBuilder builder;
 		builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
 		builder.RegisterService(&service);
-		std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
+		m_Server = builder.BuildAndStart();
 		std::cout << "Server listening on " << server_address << std::endl;
-		server->Wait();
+		m_Server->Wait();
 		
 		//exec();
 	}
+public:
+	GRPCServerThread(uint16_t port) : m_Port(port) {}
+	std::unique_ptr<grpc::Server> m_Server = nullptr;
+	const uint16_t m_Port;
 };
 
 
@@ -145,20 +172,6 @@ public:
 	}
 };
 
-// самая важная структура сервера, хранит в себе процессоры обраотки и все все все
-struct ServerStruct
-{
-	ServerStruct()
-	{
-		m_GRPCServerThread.start();
-	}
-	
-	// хэш обрабатываемых id потоков и лок для работы с ним
-	QHash< int, ProcessorThread* > m_ProcessorHash;
-	QReadWriteLock m_ProcessorHashLock;
-	GRPCServerThread m_GRPCServerThread;	
-};
-
 struct InputContext
 {
 	InputContext( const int id ): m_Id(id) {}
@@ -177,16 +190,7 @@ class InputThread : public QThread
 {
 	void run() override
 	{
-		//qDebug() << "input thread started" << m_InitString;
-		
-		// перед запуском потока передаем тестовые параметры из командной строки
-		const QList< int > id_list = [](const QStringList sl)
-		{
-			QList< int > result;
-			// нет проверки корректности toInt() - забил
-			for( int i = 0; i < sl.size(); ++i ) result << sl[i].toInt();
-			return result;
-		}( m_InitString.split(",") );
+		qDebug() << "input thread started id list" << m_IdList;
 		
 		// целевая скорость генерируемого потока, 256 Мбит/с в байтах
 		const uint64_t TARGET_RATE = 256*1024*1024/8;
@@ -200,7 +204,7 @@ class InputThread : public QThread
 		
 		while( !m_StopFlag )
 		{
-			for( int id_index = 0; id_index < id_list.size(); ++id_index )
+			for( int id_index = 0; id_index < m_IdList.size(); ++id_index )
 			{
 				// для каждого входного потока генерируем байты
 				
@@ -209,7 +213,7 @@ class InputThread : public QThread
 				
 				// генерируем байты для очередного входного потока
 				// кстати, да, со словами "поток" тут беда, входной поток всмысле тред и входные потоки, всмысле байты, но не суть
-				const int id = id_list[id_index];				
+				const int id = m_IdList[id_index];				
 				
 				// получаем контекст для данного входного потока
 				InputContext*& input_context = m_ContextHash[id];
@@ -222,8 +226,8 @@ class InputThread : public QThread
 					ProcessorThread* p_context = new ProcessorThread( id );;
 					{
 						// заносим созданный обработчик в хэш
-						const QWriteLocker l( &m_ServerStruct.m_ProcessorHashLock );
-						m_ServerStruct.m_ProcessorHash[id] = p_context;
+						const QWriteLocker l( &m_ServerStruct->m_ProcessorHashLock );
+						m_ServerStruct->m_ProcessorHash[id] = p_context;
 					}
 					// приемный контекст запоминает контекст обрбаотчика
 					input_context->m_ProcessorThread = p_context;
@@ -276,8 +280,8 @@ class InputThread : public QThread
 
 public:
 	
-	InputThread( ServerStruct& server, const QString str ) 
-		: m_InitString(str), m_ServerStruct(server)
+	InputThread( ServerStruct* server, const QList<int>& id_list ) 
+		: m_IdList(id_list), m_ServerStruct(server)
 	{
 	}
 	~InputThread()
@@ -291,18 +295,71 @@ public:
 	// хэш используется только во входном потоке
 	QHash< int, InputContext* > m_ContextHash;
 	
-	const QString m_InitString;
-	ServerStruct& m_ServerStruct;
+	const QList<int> m_IdList;
+	ServerStruct* m_ServerStruct = nullptr;
 };
+
+
+ServerStruct::ServerStruct(int port, const QList<int>& id_list):
+	m_InputThread( new InputThread( this, id_list ) )
+	, m_GRPCServerThread( new GRPCServerThread(port) )
+{
+	m_GRPCServerThread->start();		
+	m_InputThread->start();
+}
+
+ServerStruct::~ServerStruct()
+{
+	// в реальном софте нужны таймеры на остановку потока - здесь не делаю
+	m_InputThread->m_StopFlag = true;
+	m_InputThread->wait();
+	
+	{
+		QWriteLocker l(&m_ProcessorHashLock);
+		// лучше сначала всем потокам выставить флаг остановки - потом ждать все
+		for( ProcessorThread* p : m_ProcessorHash ) p->m_StopFlag = true;
+		for( ProcessorThread* p : m_ProcessorHash ) p->wait();
+		qDeleteAll( m_ProcessorHash );
+	}
+	
+	m_GRPCServerThread->m_Server->Shutdown();
+	m_GRPCServerThread->m_Server->Wait();
+	
+	delete m_InputThread;
+	delete m_GRPCServerThread;
+}
+
 
 int main( int argc, char** argv )
 {
 	QCoreApplication app( argc, argv );
 	
-	ServerStruct server;
+	// опции, дефолтные значения
+	uint16_t port = 50051;	// порт сервера gRPC
+	QList<int> id_list = QList<int>() << 100 << 101;	// принимаемые потоки на данном сервере
 	
-	InputThread* input = new InputThread( server, "100,101,102,103" );
-	input->start();
+	bool ok = true;
+	const QStringList args = app.arguments();
+	for( int i = 1; i < args.size(); ++i )
+	{
+		if( args.size() > i+1 )
+		{
+			if( args[i].toLower() == "--port"  )
+			{
+				port = args[i+1].toInt(&ok);
+			}
+			else if( args[i].toLower() == "--id" )
+			{
+				id_list.clear();
+				const QStringList sl = args[i+1].split(",");
+				for( const QString& s : sl ) id_list << s.toInt(&ok);
+			}
+		}
+	}
+	
+	if( !ok ) return -1;
+	
+	ServerStruct server( port, id_list );
 
 	return app.exec();
 }
