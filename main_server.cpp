@@ -48,21 +48,13 @@ struct ServerStruct
 	QList<int> m_ProcessorIdList;
 	QReadWriteLock m_ProcessorIdListLock;
 	
-	// входной поток и поток gRPC сервера
+	// входной поток и поток gRPC-сервера
 	GRPCServerThread* m_GRPCServerThread = nullptr;
 	InputThread* m_InputThread = nullptr;	
 };
 
 class GRPCServiceImpl final : public Greeter::Service
 {
-	grpc::Status SayHello(grpc::ServerContext* context, const HelloRequest* request, HelloReply* response) override
-	{
-		QString request_string = request->name().c_str();
-		request_string.append(" added by server");
-		response->set_message(request_string.toStdString());
-		return grpc::Status::OK;
-	}
-	
 	grpc::Status Command(grpc::ServerContext* context, const CommandRequest* request, CommandReply* response) override
 	{
 		const QString cmd(request->request().c_str());
@@ -122,8 +114,6 @@ class GRPCServerThread : public QThread
 		m_Server = builder.BuildAndStart();
 		std::cout << "Server listening on " << server_address << std::endl;
 		m_Server->Wait();
-		
-		//exec();
 	}
 public:
 	GRPCServerThread(ServerStruct* s, uint16_t port) : m_Port(port), m_ServerStruct(s) {}
@@ -167,13 +157,13 @@ class ProcessorThread : public QThread
 			const uint64_t current_tick = GetTickCount64();
 			const uint64_t dt = current_tick - m_LastTick;
 			const double speed = ((double)m_ProcessedSinceLastTick/dt)/1024/1024*8*1000; // МБит/с
-			/*qDebug() << 
+			qDebug() << 
 				QString("processthread %1 iteration Total/Err: %2/%3 Speed: %4 Mb/s")
 					.arg( m_Id )
 					.arg( m_Stat[StatTotalProcessed] )
 					.arg( m_Stat[StatTotalErrors] )
 					.arg( speed )
-			;*/		
+			;		
 			m_LastTick = current_tick;
 			m_ProcessedSinceLastTick = 0;
 			

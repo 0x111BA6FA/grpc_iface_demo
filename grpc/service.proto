@@ -3,9 +3,10 @@ syntax = 'proto3';
 // The greeting service definition.
 service Greeter
 {
-	// Sends a greeting
-	rpc SayHello (HelloRequest) returns (HelloReply) {}
+	// Send command and get a reply
 	rpc Command (CommandRequest) returns (CommandReply) {}
+	// Get bytes of the specified id
+	rpc GetBytes (GetBytesRequest) returns (GetBytesReply)
 }
 
 message CommandRequest
@@ -18,14 +19,13 @@ message CommandReply
 	string reply = 1;
 }
 
-// The request message containing the user's name.
-message HelloRequest
+message GetBytesRequest
 {
-	string name = 1;
+	int32 id = 1;
 }
 
-// The response message containing the greetings
-message HelloReply
+message GetBytesReply
 {
-	string message = 1;
+	bytes data = 1;
+	int32 dropped_bytes = 2;
 }
