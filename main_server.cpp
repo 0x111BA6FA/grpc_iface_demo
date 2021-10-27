@@ -69,12 +69,12 @@ class GRPCServiceImpl final : public Greeter::Service
 		
 		// вообще тут удобнее все использовать будет JSON для передачи всяких разных команд и структур, ну пока так
 		
-		if( cmd.toLower() == "servers list" )
+		if( cmd.toLower() == "serverslist" )
 		{
 			// обрабатываем известную команду и посылаем лист серверов команду
 			response->set_reply( g_ServersList.toStdString() );
 		}
-		else if( cmd.toLower() == "id list" )
+		else if( cmd.toLower() == "idlist" )
 		{
 			// команда на получение списка всех обрабатываемых id данным сервером
 			QList<int> id_list;
@@ -89,6 +89,8 @@ class GRPCServiceImpl final : public Greeter::Service
 				if( !result.isEmpty() ) result += ",";
 				result += QString::number(id);
 			}
+			
+			response->set_reply( result.toStdString() );
 		}
 		else
 		{
