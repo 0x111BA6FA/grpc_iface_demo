@@ -6,7 +6,7 @@ service Greeter
 	// Send command and get a reply
 	rpc Command (CommandRequest) returns (CommandReply) {}
 	// Get bytes of the specified id
-	rpc GetBytes (GetBytesRequest) returns (GetBytesReply)
+	rpc GetBytes (GetBytesRequest) returns (GetBytesReply) {}
 }
 
 message CommandRequest
@@ -27,5 +27,5 @@ message GetBytesRequest
 message GetBytesReply
 {
 	bytes data = 1;
-	int32 dropped_bytes = 2;
+	int32 droppedBytes = 2;
 }

@@ -40,30 +40,31 @@ struct CommandReplyDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT CommandReplyDefaultTypeInternal _CommandReply_default_instance_;
-constexpr HelloRequest::HelloRequest(
+constexpr GetBytesRequest::GetBytesRequest(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string){}
-struct HelloRequestDefaultTypeInternal {
-  constexpr HelloRequestDefaultTypeInternal()
+  : id_(0){}
+struct GetBytesRequestDefaultTypeInternal {
+  constexpr GetBytesRequestDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~HelloRequestDefaultTypeInternal() {}
+  ~GetBytesRequestDefaultTypeInternal() {}
   union {
-    HelloRequest _instance;
+    GetBytesRequest _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT HelloRequestDefaultTypeInternal _HelloRequest_default_instance_;
-constexpr HelloReply::HelloReply(
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT GetBytesRequestDefaultTypeInternal _GetBytesRequest_default_instance_;
+constexpr GetBytesReply::GetBytesReply(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : message_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string){}
-struct HelloReplyDefaultTypeInternal {
-  constexpr HelloReplyDefaultTypeInternal()
+  : data_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , droppedbytes_(0){}
+struct GetBytesReplyDefaultTypeInternal {
+  constexpr GetBytesReplyDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~HelloReplyDefaultTypeInternal() {}
+  ~GetBytesReplyDefaultTypeInternal() {}
   union {
-    HelloReply _instance;
+    GetBytesReply _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT HelloReplyDefaultTypeInternal _HelloReply_default_instance_;
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT GetBytesReplyDefaultTypeInternal _GetBytesReply_default_instance_;
 static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_grpc_2fservice_2eproto[4];
 static constexpr ::PROTOBUF_NAMESPACE_ID::EnumDescriptor const** file_level_enum_descriptors_grpc_2fservice_2eproto = nullptr;
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_grpc_2fservice_2eproto = nullptr;
@@ -84,46 +85,48 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_grpc_2fservice_2eproto::offset
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::CommandReply, reply_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::HelloRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::GetBytesRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::HelloRequest, name_),
+  PROTOBUF_FIELD_OFFSET(::GetBytesRequest, id_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::HelloReply, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::GetBytesReply, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::HelloReply, message_),
+  PROTOBUF_FIELD_OFFSET(::GetBytesReply, data_),
+  PROTOBUF_FIELD_OFFSET(::GetBytesReply, droppedbytes_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::CommandRequest)},
   { 7, -1, -1, sizeof(::CommandReply)},
-  { 14, -1, -1, sizeof(::HelloRequest)},
-  { 21, -1, -1, sizeof(::HelloReply)},
+  { 14, -1, -1, sizeof(::GetBytesRequest)},
+  { 21, -1, -1, sizeof(::GetBytesReply)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_CommandRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_CommandReply_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_HelloRequest_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_HelloReply_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_GetBytesRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_GetBytesReply_default_instance_),
 };
 
 const char descriptor_table_protodef_grpc_2fservice_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\022grpc/service.proto\"!\n\016CommandRequest\022\017"
   "\n\007request\030\001 \001(\t\"\035\n\014CommandReply\022\r\n\005reply"
-  "\030\001 \001(\t\"\034\n\014HelloRequest\022\014\n\004name\030\001 \001(\t\"\035\n\n"
-  "HelloReply\022\017\n\007message\030\001 \001(\t2`\n\007Greeter\022("
-  "\n\010SayHello\022\r.HelloRequest\032\013.HelloReply\"\000"
-  "\022+\n\007Command\022\017.CommandRequest\032\r.CommandRe"
-  "ply\"\000b\006proto3"
+  "\030\001 \001(\t\"\035\n\017GetBytesRequest\022\n\n\002id\030\001 \001(\005\"3\n"
+  "\rGetBytesReply\022\014\n\004data\030\001 \001(\014\022\024\n\014droppedB"
+  "ytes\030\002 \001(\0052f\n\007Greeter\022+\n\007Command\022\017.Comma"
+  "ndRequest\032\r.CommandReply\"\000\022.\n\010GetBytes\022\020"
+  ".GetBytesRequest\032\016.GetBytesReply\"\000b\006prot"
+  "o3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_grpc_2fservice_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_grpc_2fservice_2eproto = {
-  false, false, 253, descriptor_table_protodef_grpc_2fservice_2eproto, "grpc/service.proto", 
+  false, false, 282, descriptor_table_protodef_grpc_2fservice_2eproto, "grpc/service.proto", 
   &descriptor_table_grpc_2fservice_2eproto_once, nullptr, 0, 4,
   schemas, file_default_instances, TableStruct_grpc_2fservice_2eproto::offsets,
   file_level_metadata_grpc_2fservice_2eproto, file_level_enum_descriptors_grpc_2fservice_2eproto, file_level_service_descriptors_grpc_2fservice_2eproto,
@@ -531,78 +534,71 @@ void CommandReply::InternalSwap(CommandReply* other) {
 
 // ===================================================================
 
-class HelloRequest::_Internal {
+class GetBytesRequest::_Internal {
  public:
 };
 
-HelloRequest::HelloRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+GetBytesRequest::GetBytesRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
   if (!is_message_owned) {
     RegisterArenaDtor(arena);
   }
-  // @@protoc_insertion_point(arena_constructor:HelloRequest)
+  // @@protoc_insertion_point(arena_constructor:GetBytesRequest)
 }
-HelloRequest::HelloRequest(const HelloRequest& from)
+GetBytesRequest::GetBytesRequest(const GetBytesRequest& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from._internal_name().empty()) {
-    name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_name(), 
-      GetArenaForAllocation());
-  }
-  // @@protoc_insertion_point(copy_constructor:HelloRequest)
+  id_ = from.id_;
+  // @@protoc_insertion_point(copy_constructor:GetBytesRequest)
 }
 
-void HelloRequest::SharedCtor() {
-name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+void GetBytesRequest::SharedCtor() {
+id_ = 0;
 }
 
-HelloRequest::~HelloRequest() {
-  // @@protoc_insertion_point(destructor:HelloRequest)
+GetBytesRequest::~GetBytesRequest() {
+  // @@protoc_insertion_point(destructor:GetBytesRequest)
   if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-inline void HelloRequest::SharedDtor() {
+inline void GetBytesRequest::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-void HelloRequest::ArenaDtor(void* object) {
-  HelloRequest* _this = reinterpret_cast< HelloRequest* >(object);
+void GetBytesRequest::ArenaDtor(void* object) {
+  GetBytesRequest* _this = reinterpret_cast< GetBytesRequest* >(object);
   (void)_this;
 }
-void HelloRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void GetBytesRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void HelloRequest::SetCachedSize(int size) const {
+void GetBytesRequest::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
 
-void HelloRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:HelloRequest)
+void GetBytesRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:GetBytesRequest)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  name_.ClearToEmpty();
+  id_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* HelloRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* GetBytesRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // string name = 1;
+      // int32 id = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
-          auto str = _internal_mutable_name();
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "HelloRequest.name"));
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -630,97 +626,85 @@ failure:
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* HelloRequest::_InternalSerialize(
+::PROTOBUF_NAMESPACE_ID::uint8* GetBytesRequest::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:HelloRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:GetBytesRequest)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string name = 1;
-  if (!this->_internal_name().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "HelloRequest.name");
-    target = stream->WriteStringMaybeAliased(
-        1, this->_internal_name(), target);
+  // int32 id = 1;
+  if (this->_internal_id() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->_internal_id(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:HelloRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:GetBytesRequest)
   return target;
 }
 
-size_t HelloRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:HelloRequest)
+size_t GetBytesRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:GetBytesRequest)
   size_t total_size = 0;
 
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // string name = 1;
-  if (!this->_internal_name().empty()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_name());
+  // int32 id = 1;
+  if (this->_internal_id() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_id());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData HelloRequest::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData GetBytesRequest::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
-    HelloRequest::MergeImpl
+    GetBytesRequest::MergeImpl
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*HelloRequest::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetBytesRequest::GetClassData() const { return &_class_data_; }
 
-void HelloRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+void GetBytesRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
                       const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-  static_cast<HelloRequest *>(to)->MergeFrom(
-      static_cast<const HelloRequest &>(from));
+  static_cast<GetBytesRequest *>(to)->MergeFrom(
+      static_cast<const GetBytesRequest &>(from));
 }
 
 
-void HelloRequest::MergeFrom(const HelloRequest& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:HelloRequest)
+void GetBytesRequest::MergeFrom(const GetBytesRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:GetBytesRequest)
   GOOGLE_DCHECK_NE(&from, this);
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (!from._internal_name().empty()) {
-    _internal_set_name(from._internal_name());
+  if (from._internal_id() != 0) {
+    _internal_set_id(from._internal_id());
   }
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void HelloRequest::CopyFrom(const HelloRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:HelloRequest)
+void GetBytesRequest::CopyFrom(const GetBytesRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:GetBytesRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool HelloRequest::IsInitialized() const {
+bool GetBytesRequest::IsInitialized() const {
   return true;
 }
 
-void HelloRequest::InternalSwap(HelloRequest* other) {
+void GetBytesRequest::InternalSwap(GetBytesRequest* other) {
   using std::swap;
-  auto* lhs_arena = GetArenaForAllocation();
-  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
-      &name_, lhs_arena,
-      &other->name_, rhs_arena
-  );
+  swap(id_, other->id_);
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata HelloRequest::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata GetBytesRequest::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_grpc_2fservice_2eproto_getter, &descriptor_table_grpc_2fservice_2eproto_once,
       file_level_metadata_grpc_2fservice_2eproto[2]);
@@ -728,78 +712,88 @@ void HelloRequest::InternalSwap(HelloRequest* other) {
 
 // ===================================================================
 
-class HelloReply::_Internal {
+class GetBytesReply::_Internal {
  public:
 };
 
-HelloReply::HelloReply(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+GetBytesReply::GetBytesReply(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
   if (!is_message_owned) {
     RegisterArenaDtor(arena);
   }
-  // @@protoc_insertion_point(arena_constructor:HelloReply)
+  // @@protoc_insertion_point(arena_constructor:GetBytesReply)
 }
-HelloReply::HelloReply(const HelloReply& from)
+GetBytesReply::GetBytesReply(const GetBytesReply& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  message_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from._internal_message().empty()) {
-    message_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_message(), 
+  data_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_data().empty()) {
+    data_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_data(), 
       GetArenaForAllocation());
   }
-  // @@protoc_insertion_point(copy_constructor:HelloReply)
+  droppedbytes_ = from.droppedbytes_;
+  // @@protoc_insertion_point(copy_constructor:GetBytesReply)
 }
 
-void HelloReply::SharedCtor() {
-message_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+void GetBytesReply::SharedCtor() {
+data_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+droppedbytes_ = 0;
 }
 
-HelloReply::~HelloReply() {
-  // @@protoc_insertion_point(destructor:HelloReply)
+GetBytesReply::~GetBytesReply() {
+  // @@protoc_insertion_point(destructor:GetBytesReply)
   if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-inline void HelloReply::SharedDtor() {
+inline void GetBytesReply::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  message_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  data_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-void HelloReply::ArenaDtor(void* object) {
-  HelloReply* _this = reinterpret_cast< HelloReply* >(object);
+void GetBytesReply::ArenaDtor(void* object) {
+  GetBytesReply* _this = reinterpret_cast< GetBytesReply* >(object);
   (void)_this;
 }
-void HelloReply::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void GetBytesReply::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void HelloReply::SetCachedSize(int size) const {
+void GetBytesReply::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
 
-void HelloReply::Clear() {
-// @@protoc_insertion_point(message_clear_start:HelloReply)
+void GetBytesReply::Clear() {
+// @@protoc_insertion_point(message_clear_start:GetBytesReply)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  message_.ClearToEmpty();
+  data_.ClearToEmpty();
+  droppedbytes_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* HelloReply::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* GetBytesReply::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // string message = 1;
+      // bytes data = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
-          auto str = _internal_mutable_message();
+          auto str = _internal_mutable_data();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "HelloReply.message"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 droppedBytes = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+          droppedbytes_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -827,97 +821,108 @@ failure:
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* HelloReply::_InternalSerialize(
+::PROTOBUF_NAMESPACE_ID::uint8* GetBytesReply::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:HelloReply)
+  // @@protoc_insertion_point(serialize_to_array_start:GetBytesReply)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string message = 1;
-  if (!this->_internal_message().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_message().data(), static_cast<int>(this->_internal_message().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "HelloReply.message");
-    target = stream->WriteStringMaybeAliased(
-        1, this->_internal_message(), target);
+  // bytes data = 1;
+  if (!this->_internal_data().empty()) {
+    target = stream->WriteBytesMaybeAliased(
+        1, this->_internal_data(), target);
+  }
+
+  // int32 droppedBytes = 2;
+  if (this->_internal_droppedbytes() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(2, this->_internal_droppedbytes(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:HelloReply)
+  // @@protoc_insertion_point(serialize_to_array_end:GetBytesReply)
   return target;
 }
 
-size_t HelloReply::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:HelloReply)
+size_t GetBytesReply::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:GetBytesReply)
   size_t total_size = 0;
 
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // string message = 1;
-  if (!this->_internal_message().empty()) {
+  // bytes data = 1;
+  if (!this->_internal_data().empty()) {
     total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_message());
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
+        this->_internal_data());
+  }
+
+  // int32 droppedBytes = 2;
+  if (this->_internal_droppedbytes() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_droppedbytes());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData HelloReply::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData GetBytesReply::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
-    HelloReply::MergeImpl
+    GetBytesReply::MergeImpl
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*HelloReply::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetBytesReply::GetClassData() const { return &_class_data_; }
 
-void HelloReply::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+void GetBytesReply::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
                       const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-  static_cast<HelloReply *>(to)->MergeFrom(
-      static_cast<const HelloReply &>(from));
+  static_cast<GetBytesReply *>(to)->MergeFrom(
+      static_cast<const GetBytesReply &>(from));
 }
 
 
-void HelloReply::MergeFrom(const HelloReply& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:HelloReply)
+void GetBytesReply::MergeFrom(const GetBytesReply& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:GetBytesReply)
   GOOGLE_DCHECK_NE(&from, this);
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (!from._internal_message().empty()) {
-    _internal_set_message(from._internal_message());
+  if (!from._internal_data().empty()) {
+    _internal_set_data(from._internal_data());
+  }
+  if (from._internal_droppedbytes() != 0) {
+    _internal_set_droppedbytes(from._internal_droppedbytes());
   }
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void HelloReply::CopyFrom(const HelloReply& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:HelloReply)
+void GetBytesReply::CopyFrom(const GetBytesReply& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:GetBytesReply)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool HelloReply::IsInitialized() const {
+bool GetBytesReply::IsInitialized() const {
   return true;
 }
 
-void HelloReply::InternalSwap(HelloReply* other) {
+void GetBytesReply::InternalSwap(GetBytesReply* other) {
   using std::swap;
   auto* lhs_arena = GetArenaForAllocation();
   auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
-      &message_, lhs_arena,
-      &other->message_, rhs_arena
+      &data_, lhs_arena,
+      &other->data_, rhs_arena
   );
+  swap(droppedbytes_, other->droppedbytes_);
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata HelloReply::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata GetBytesReply::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_grpc_2fservice_2eproto_getter, &descriptor_table_grpc_2fservice_2eproto_once,
       file_level_metadata_grpc_2fservice_2eproto[3]);
@@ -931,11 +936,11 @@ template<> PROTOBUF_NOINLINE ::CommandRequest* Arena::CreateMaybeMessage< ::Comm
 template<> PROTOBUF_NOINLINE ::CommandReply* Arena::CreateMaybeMessage< ::CommandReply >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CommandReply >(arena);
 }
-template<> PROTOBUF_NOINLINE ::HelloRequest* Arena::CreateMaybeMessage< ::HelloRequest >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::HelloRequest >(arena);
+template<> PROTOBUF_NOINLINE ::GetBytesRequest* Arena::CreateMaybeMessage< ::GetBytesRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::GetBytesRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::HelloReply* Arena::CreateMaybeMessage< ::HelloReply >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::HelloReply >(arena);
+template<> PROTOBUF_NOINLINE ::GetBytesReply* Arena::CreateMaybeMessage< ::GetBytesReply >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::GetBytesReply >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

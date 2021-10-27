@@ -53,6 +53,126 @@ struct ServerStruct
 	InputThread* m_InputThread = nullptr;	
 };
 
+// класс-поток процессора обработки, для примера делаю так, что каждый входной поток обрабатывается в отдельном потоке
+// но это совершенно не обязательно, нужно смотреть по ситуации
+class ProcessorThread : public QThread
+{
+	void run() override
+	{
+		//qDebug() << "processing thread" << m_Id << "started";
+		
+		const int SLEEP_MSEC = 500;
+		
+		while( !m_StopFlag )
+		{
+			QQueue< QByteArray > queue;
+			{
+				// забираем пакеты из очереди на обработку
+				QWriteLocker l( &m_QueueLock );
+				queue = std::move(m_Queue);
+			}
+			
+			while( queue.size() )
+			{
+				// берем очередной пакет
+				const QByteArray bytes( std::move(queue.front()) );
+				queue.pop_front();
+				
+				m_ProcessedSinceLastTick += bytes.size();
+				
+				process( bytes );				
+			}
+			
+			// этого вообще здесь быть н едолжно, так для наглядности
+			const uint64_t current_tick = GetTickCount64();
+			const uint64_t dt = current_tick - m_LastTick;
+			const double speed = ((double)m_ProcessedSinceLastTick/dt)/1024/1024*8*1000; // МБит/с
+			qDebug() << 
+				QString("processthread %1 iteration Total/Err: %2/%3 Speed: %4 Mb/s Dropped: %5 B")
+					.arg( m_Id )
+					.arg( m_Stat[StatTotalProcessed] )
+					.arg( m_Stat[StatTotalErrors] )
+					.arg( speed )
+					.arg( m_GetBytesDroppedBytes )
+			;		
+			m_LastTick = current_tick;
+			m_ProcessedSinceLastTick = 0;
+			
+			QThread::msleep( SLEEP_MSEC );
+		}
+	}
+public:
+	ProcessorThread( const int id ): m_Id(id) {}
+	const int m_Id;
+	volatile bool m_StopFlag = false;
+	
+	// наверное, под конкретные параметры входного сигнала можно пререзервировать очередь
+	QQueue< QByteArray > m_Queue;
+	QReadWriteLock m_QueueLock;
+	
+	// последний обрбаотанный счетчик из первых двух байтов, -1 - обработки еще не было
+	int m_LastCounter = -1;
+	uint64_t m_LastTick = 0;
+	uint64_t m_ProcessedSinceLastTick = 0;
+	// буфер для работы с командой GetBytes
+	QReadWriteLock m_GetBytesBufferLock;
+	QByteArray m_GetBytesBuffer;
+	uint64_t m_GetBytesDroppedBytes = 0;
+	volatile bool m_GetBytesNeedFlag = false;
+	
+	// очень люблю организовывать статистику обрбаотки в таком стиле, её потом классно суммировать
+	// количество ошибок при обработке пакетов
+	// при нормальной оработке у меня тут обычно много счетчиков накапливается на каждый шаг обрбаотки
+	// впринципе, если будет много интовых переменных обработки - можно их в таком же стиле хранить
+	enum
+	{
+		StatTotalProcessed = 0,
+		StatTotalErrors,
+		
+		StatEnd
+	};
+	std::vector<uint64_t> m_Stat = std::vector<uint64_t>(StatEnd, 0);
+	
+	
+	void process( const QByteArray& bytes )
+	{
+		// обработка очередного пакета
+		// в моем случае тут будет просто контроль счетчика
+		const uint16_t to_check = *(uint16_t*)bytes.data();
+		
+		// проверяем и считаем ошибки
+		if( m_LastCounter > 0 && ((m_LastCounter + 1)&0xFFFF) != to_check ) m_Stat[ StatTotalErrors ] += 1;
+		m_LastCounter = to_check;
+		
+		if( m_GetBytesNeedFlag )
+		{
+			// если поднят флаг - захватываем поток
+			
+			// допустим хранить будем максимум секунду потока, при переполнении сбрасывать буфер
+			const uint64_t MAX_BUFFER_SIZE = 256*1024*1024/8;	// МБ за секунду накопится при скорости 256Мбит/с			
+			
+			if( m_GetBytesBuffer.size() > MAX_BUFFER_SIZE )
+			{
+				// буфер переполнился - сбрасываем буфер
+				m_GetBytesDroppedBytes += m_GetBytesBuffer.size();
+				
+				QWriteLocker l(&m_GetBytesBufferLock);
+				m_GetBytesBuffer.clear();
+			}
+			
+			{
+				// записываем очередные данные в буфер
+				QWriteLocker l(&m_GetBytesBufferLock);
+				m_GetBytesBuffer.append( bytes );
+			}
+		}
+		
+
+		// считаем количество обработанных пакетов
+		m_Stat[ StatTotalProcessed ] += 1;		
+	}
+};
+
 class GRPCServiceImpl final : public Greeter::Service
 {
 	grpc::Status Command(grpc::ServerContext* context, const CommandRequest* request, CommandReply* response) override
@@ -93,6 +213,42 @@ class GRPCServiceImpl final : public Greeter::Service
 		return grpc::Status::OK;
 	}
 	
+	grpc::Status GetBytes(grpc::ServerContext* context, const GetBytesRequest* request, GetBytesReply* response) override
+	{
+		const int id = request->id();
+		
+		// проверка на принимаемость чеерз паралелльный лист тут должна быть
+		
+		ProcessorThread* proc = nullptr;
+		{
+			QReadLocker l(&m_ServerStruct->m_ProcessorHashLock);
+			proc = m_ServerStruct->m_ProcessorHash.value( id, nullptr );
+		}
+		
+		if( proc )
+		{
+			if( !proc->m_GetBytesNeedFlag )
+			{
+				// захват только начался - резервируем байты и ствим флаг
+				proc->m_GetBytesBuffer.reserve(256*1024*1024/8);	// да, это должна быть константа
+				proc->m_GetBytesNeedFlag = true;
+			}
+			
+			QByteArray to_send;
+			{
+				// забираем даные из буфера
+				QWriteLocker l(&proc->m_GetBytesBufferLock);
+				to_send = std::move(proc->m_GetBytesBuffer);
+			}
+			
+			// заполняем байтами ответ
+			response->set_data( to_send.data(), to_send.size() );
+			response->set_droppedbytes( proc->m_GetBytesDroppedBytes );
+		}
+		
+		return grpc::Status::OK;
+	}
+	
 public:
 	ServerStruct* m_ServerStruct = nullptr;
 };
@@ -110,6 +266,8 @@ class GRPCServerThread : public QThread
 		
 		grpc::ServerBuilder builder;
 		builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
+		builder.SetMaxReceiveMessageSize(-1);
+		builder.SetMaxSendMessageSize(-1);
 		builder.RegisterService(&service);
 		m_Server = builder.BuildAndStart();
 		std::cout << "Server listening on " << server_address << std::endl;
@@ -120,97 +278,6 @@ public:
 	std::unique_ptr<grpc::Server> m_Server = nullptr;
 	const uint16_t m_Port;
 	ServerStruct* const m_ServerStruct = nullptr;	// для передачи в обработку потоку gRPC, для примера, как по-хорошему все это организовать будет видно
-};
-
-
-// класс-поток процессора обработки, для примера делаю так, что каждый входной поток обрабатывается в отдельном потоке
-// но это совершенно не обязательно, нужно смотреть по ситуации
-class ProcessorThread : public QThread
-{
-	void run() override
-	{
-		//qDebug() << "processing thread" << m_Id << "started";
-		
-		const int SLEEP_MSEC = 500;
-		
-		while( !m_StopFlag )
-		{
-			QQueue< QByteArray > queue;
-			{
-				// забираем пакеты из очереди на обработку
-				QWriteLocker l( &m_QueueLock );
-				queue = std::move(m_Queue);
-			}
-			
-			while( queue.size() )
-			{
-				// берем очередной пакет
-				const QByteArray bytes( std::move(queue.front()) );
-				queue.pop_front();
-				
-				m_ProcessedSinceLastTick += bytes.size();
-				
-				process( bytes );				
-			}
-			
-			// этого вообще здесь быть н едолжно, так для наглядности
-			const uint64_t current_tick = GetTickCount64();
-			const uint64_t dt = current_tick - m_LastTick;
-			const double speed = ((double)m_ProcessedSinceLastTick/dt)/1024/1024*8*1000; // МБит/с
-			qDebug() << 
-				QString("processthread %1 iteration Total/Err: %2/%3 Speed: %4 Mb/s")
-					.arg( m_Id )
-					.arg( m_Stat[StatTotalProcessed] )
-					.arg( m_Stat[StatTotalErrors] )
-					.arg( speed )
-			;		
-			m_LastTick = current_tick;
-			m_ProcessedSinceLastTick = 0;
-			
-			QThread::msleep( SLEEP_MSEC );
-		}
-	}
-public:
-	ProcessorThread( const int id ): m_Id(id) {}
-	const int m_Id;
-	volatile bool m_StopFlag = false;
-	
-	// наверное, под конкретные параметры входного сигнала можно пререзервировать очередь
-	QQueue< QByteArray > m_Queue;
-	QReadWriteLock m_QueueLock;
-	
-	// последний обрбаотанный счетчик из первых двух байтов, -1 - обработки еще не было
-	int m_LastCounter = -1;
-	uint64_t m_LastTick = 0;
-	uint64_t m_ProcessedSinceLastTick = 0;
-	
-	// очень люблю организовывать статистику обрбаотки в таком стиле, её потом классно суммировать
-	// количество ошибок при обработке пакетов
-	// при нормальной оработке у меня тут обычно много счетчиков накапливается на каждый шаг обрбаотки
-	// впринципе, если будет много интовых переменных обработки - можно их в таком же стиле хранить
-	enum
-	{
-		StatTotalProcessed = 0,
-		StatTotalErrors,
-		
-		StatEnd
-	};
-	std::vector<uint64_t> m_Stat = std::vector<uint64_t>(StatEnd, 0);
-	
-	
-	void process( const QByteArray& bytes )
-	{
-		// обработка очередного пакета
-		// в моем случае тут будет просто контроль счетчика
-		const uint16_t to_check = *(uint16_t*)bytes.data();
-		
-		// проверяем и считаем ошибки
-		if( m_LastCounter > 0 && ((m_LastCounter + 1)&0xFFFF) != to_check ) m_Stat[ StatTotalErrors ] += 1;
-		m_LastCounter = to_check;
-
-		// считаем количество обработанных пакетов
-		m_Stat[ StatTotalProcessed ] += 1;		
-	}
 };
 
 struct InputContext

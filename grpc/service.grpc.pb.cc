@@ -21,8 +21,8 @@
 #include <grpcpp/impl/codegen/sync_stream.h>
 
 static const char* Greeter_method_names[] = {
-  "/Greeter/SayHello",
   "/Greeter/Command",
+  "/Greeter/GetBytes",
 };
 
 std::unique_ptr< Greeter::Stub> Greeter::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -32,32 +32,9 @@ std::unique_ptr< Greeter::Stub> Greeter::NewStub(const std::shared_ptr< ::grpc::
 }
 
 Greeter::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
-  : channel_(channel), rpcmethod_SayHello_(Greeter_method_names[0], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_Command_(Greeter_method_names[1], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  : channel_(channel), rpcmethod_Command_(Greeter_method_names[0], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetBytes_(Greeter_method_names[1], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
-
-::grpc::Status Greeter::Stub::SayHello(::grpc::ClientContext* context, const ::HelloRequest& request, ::HelloReply* response) {
-  return ::grpc::internal::BlockingUnaryCall< ::HelloRequest, ::HelloReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_SayHello_, context, request, response);
-}
-
-void Greeter::Stub::experimental_async::SayHello(::grpc::ClientContext* context, const ::HelloRequest* request, ::HelloReply* response, std::function<void(::grpc::Status)> f) {
-  ::grpc::internal::CallbackUnaryCall< ::HelloRequest, ::HelloReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_SayHello_, context, request, response, std::move(f));
-}
-
-void Greeter::Stub::experimental_async::SayHello(::grpc::ClientContext* context, const ::HelloRequest* request, ::HelloReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
-  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_SayHello_, context, request, response, reactor);
-}
-
-::grpc::ClientAsyncResponseReader< ::HelloReply>* Greeter::Stub::PrepareAsyncSayHelloRaw(::grpc::ClientContext* context, const ::HelloRequest& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::HelloReply, ::HelloRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_SayHello_, context, request);
-}
-
-::grpc::ClientAsyncResponseReader< ::HelloReply>* Greeter::Stub::AsyncSayHelloRaw(::grpc::ClientContext* context, const ::HelloRequest& request, ::grpc::CompletionQueue* cq) {
-  auto* result =
-    this->PrepareAsyncSayHelloRaw(context, request, cq);
-  result->StartCall();
-  return result;
-}
 
 ::grpc::Status Greeter::Stub::Command(::grpc::ClientContext* context, const ::CommandRequest& request, ::CommandReply* response) {
   return ::grpc::internal::BlockingUnaryCall< ::CommandRequest, ::CommandReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_Command_, context, request, response);
@@ -82,19 +59,32 @@ void Greeter::Stub::experimental_async::Command(::grpc::ClientContext* context, 
   return result;
 }
 
+::grpc::Status Greeter::Stub::GetBytes(::grpc::ClientContext* context, const ::GetBytesRequest& request, ::GetBytesReply* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::GetBytesRequest, ::GetBytesReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_GetBytes_, context, request, response);
+}
+
+void Greeter::Stub::experimental_async::GetBytes(::grpc::ClientContext* context, const ::GetBytesRequest* request, ::GetBytesReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::GetBytesRequest, ::GetBytesReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_GetBytes_, context, request, response, std::move(f));
+}
+
+void Greeter::Stub::experimental_async::GetBytes(::grpc::ClientContext* context, const ::GetBytesRequest* request, ::GetBytesReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_GetBytes_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::GetBytesReply>* Greeter::Stub::PrepareAsyncGetBytesRaw(::grpc::ClientContext* context, const ::GetBytesRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::GetBytesReply, ::GetBytesRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_GetBytes_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::GetBytesReply>* Greeter::Stub::AsyncGetBytesRaw(::grpc::ClientContext* context, const ::GetBytesRequest& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncGetBytesRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
 Greeter::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       Greeter_method_names[0],
-      ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< Greeter::Service, ::HelloRequest, ::HelloReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
-          [](Greeter::Service* service,
-             ::grpc::ServerContext* ctx,
-             const ::HelloRequest* req,
-             ::HelloReply* resp) {
-               return service->SayHello(ctx, req, resp);
-             }, this)));
-  AddMethod(new ::grpc::internal::RpcServiceMethod(
-      Greeter_method_names[1],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< Greeter::Service, ::CommandRequest, ::CommandReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](Greeter::Service* service,
@@ -103,19 +93,29 @@ Greeter::Service::Service() {
              ::CommandReply* resp) {
                return service->Command(ctx, req, resp);
              }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      Greeter_method_names[1],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< Greeter::Service, ::GetBytesRequest, ::GetBytesReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](Greeter::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::GetBytesRequest* req,
+             ::GetBytesReply* resp) {
+               return service->GetBytes(ctx, req, resp);
+             }, this)));
 }
 
 Greeter::Service::~Service() {
 }
 
-::grpc::Status Greeter::Service::SayHello(::grpc::ServerContext* context, const ::HelloRequest* request, ::HelloReply* response) {
+::grpc::Status Greeter::Service::Command(::grpc::ServerContext* context, const ::CommandRequest* request, ::CommandReply* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status Greeter::Service::Command(::grpc::ServerContext* context, const ::CommandRequest* request, ::CommandReply* response) {
+::grpc::Status Greeter::Service::GetBytes(::grpc::ServerContext* context, const ::GetBytesRequest* request, ::GetBytesReply* response) {
   (void) context;
   (void) request;
   (void) response;

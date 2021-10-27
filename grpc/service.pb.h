@@ -59,17 +59,17 @@ extern CommandReplyDefaultTypeInternal _CommandReply_default_instance_;
 class CommandRequest;
 struct CommandRequestDefaultTypeInternal;
 extern CommandRequestDefaultTypeInternal _CommandRequest_default_instance_;
-class HelloReply;
-struct HelloReplyDefaultTypeInternal;
-extern HelloReplyDefaultTypeInternal _HelloReply_default_instance_;
-class HelloRequest;
-struct HelloRequestDefaultTypeInternal;
-extern HelloRequestDefaultTypeInternal _HelloRequest_default_instance_;
+class GetBytesReply;
+struct GetBytesReplyDefaultTypeInternal;
+extern GetBytesReplyDefaultTypeInternal _GetBytesReply_default_instance_;
+class GetBytesRequest;
+struct GetBytesRequestDefaultTypeInternal;
+extern GetBytesRequestDefaultTypeInternal _GetBytesRequest_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::CommandReply* Arena::CreateMaybeMessage<::CommandReply>(Arena*);
 template<> ::CommandRequest* Arena::CreateMaybeMessage<::CommandRequest>(Arena*);
-template<> ::HelloReply* Arena::CreateMaybeMessage<::HelloReply>(Arena*);
-template<> ::HelloRequest* Arena::CreateMaybeMessage<::HelloRequest>(Arena*);
+template<> ::GetBytesReply* Arena::CreateMaybeMessage<::GetBytesReply>(Arena*);
+template<> ::GetBytesRequest* Arena::CreateMaybeMessage<::GetBytesRequest>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
@@ -370,24 +370,24 @@ class CommandReply final :
 };
 // -------------------------------------------------------------------
 
-class HelloRequest final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:HelloRequest) */ {
+class GetBytesRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:GetBytesRequest) */ {
  public:
-  inline HelloRequest() : HelloRequest(nullptr) {}
-  ~HelloRequest() override;
-  explicit constexpr HelloRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline GetBytesRequest() : GetBytesRequest(nullptr) {}
+  ~GetBytesRequest() override;
+  explicit constexpr GetBytesRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  HelloRequest(const HelloRequest& from);
-  HelloRequest(HelloRequest&& from) noexcept
-    : HelloRequest() {
+  GetBytesRequest(const GetBytesRequest& from);
+  GetBytesRequest(GetBytesRequest&& from) noexcept
+    : GetBytesRequest() {
     *this = ::std::move(from);
   }
 
-  inline HelloRequest& operator=(const HelloRequest& from) {
+  inline GetBytesRequest& operator=(const GetBytesRequest& from) {
     CopyFrom(from);
     return *this;
   }
-  inline HelloRequest& operator=(HelloRequest&& from) noexcept {
+  inline GetBytesRequest& operator=(GetBytesRequest&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -410,20 +410,20 @@ class HelloRequest final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const HelloRequest& default_instance() {
+  static const GetBytesRequest& default_instance() {
     return *internal_default_instance();
   }
-  static inline const HelloRequest* internal_default_instance() {
-    return reinterpret_cast<const HelloRequest*>(
-               &_HelloRequest_default_instance_);
+  static inline const GetBytesRequest* internal_default_instance() {
+    return reinterpret_cast<const GetBytesRequest*>(
+               &_GetBytesRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     2;
 
-  friend void swap(HelloRequest& a, HelloRequest& b) {
+  friend void swap(GetBytesRequest& a, GetBytesRequest& b) {
     a.Swap(&b);
   }
-  inline void Swap(HelloRequest* other) {
+  inline void Swap(GetBytesRequest* other) {
     if (other == this) return;
     if (GetOwningArena() == other->GetOwningArena()) {
       InternalSwap(other);
@@ -431,7 +431,7 @@ class HelloRequest final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(HelloRequest* other) {
+  void UnsafeArenaSwap(GetBytesRequest* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -439,17 +439,17 @@ class HelloRequest final :
 
   // implements Message ----------------------------------------------
 
-  inline HelloRequest* New() const final {
-    return new HelloRequest();
+  inline GetBytesRequest* New() const final {
+    return new GetBytesRequest();
   }
 
-  HelloRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<HelloRequest>(arena);
+  GetBytesRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<GetBytesRequest>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const HelloRequest& from);
+  void CopyFrom(const GetBytesRequest& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom(const HelloRequest& from);
+  void MergeFrom(const GetBytesRequest& from);
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
   public:
@@ -466,13 +466,13 @@ class HelloRequest final :
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(HelloRequest* other);
+  void InternalSwap(GetBytesRequest* other);
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "HelloRequest";
+    return "GetBytesRequest";
   }
   protected:
-  explicit HelloRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit GetBytesRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   private:
   static void ArenaDtor(void* object);
@@ -489,53 +489,48 @@ class HelloRequest final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kNameFieldNumber = 1,
+    kIdFieldNumber = 1,
   };
-  // string name = 1;
-  void clear_name();
-  const std::string& name() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_name(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_name();
-  PROTOBUF_MUST_USE_RESULT std::string* release_name();
-  void set_allocated_name(std::string* name);
+  // int32 id = 1;
+  void clear_id();
+  ::PROTOBUF_NAMESPACE_ID::int32 id() const;
+  void set_id(::PROTOBUF_NAMESPACE_ID::int32 value);
   private:
-  const std::string& _internal_name() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(const std::string& value);
-  std::string* _internal_mutable_name();
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_id() const;
+  void _internal_set_id(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
-  // @@protoc_insertion_point(class_scope:HelloRequest)
+  // @@protoc_insertion_point(class_scope:GetBytesRequest)
  private:
   class _Internal;
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
+  ::PROTOBUF_NAMESPACE_ID::int32 id_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_grpc_2fservice_2eproto;
 };
 // -------------------------------------------------------------------
 
-class HelloReply final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:HelloReply) */ {
+class GetBytesReply final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:GetBytesReply) */ {
  public:
-  inline HelloReply() : HelloReply(nullptr) {}
-  ~HelloReply() override;
-  explicit constexpr HelloReply(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline GetBytesReply() : GetBytesReply(nullptr) {}
+  ~GetBytesReply() override;
+  explicit constexpr GetBytesReply(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  HelloReply(const HelloReply& from);
-  HelloReply(HelloReply&& from) noexcept
-    : HelloReply() {
+  GetBytesReply(const GetBytesReply& from);
+  GetBytesReply(GetBytesReply&& from) noexcept
+    : GetBytesReply() {
     *this = ::std::move(from);
   }
 
-  inline HelloReply& operator=(const HelloReply& from) {
+  inline GetBytesReply& operator=(const GetBytesReply& from) {
     CopyFrom(from);
     return *this;
   }
-  inline HelloReply& operator=(HelloReply&& from) noexcept {
+  inline GetBytesReply& operator=(GetBytesReply&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -558,20 +553,20 @@ class HelloReply final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const HelloReply& default_instance() {
+  static const GetBytesReply& default_instance() {
     return *internal_default_instance();
   }
-  static inline const HelloReply* internal_default_instance() {
-    return reinterpret_cast<const HelloReply*>(
-               &_HelloReply_default_instance_);
+  static inline const GetBytesReply* internal_default_instance() {
+    return reinterpret_cast<const GetBytesReply*>(
+               &_GetBytesReply_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     3;
 
-  friend void swap(HelloReply& a, HelloReply& b) {
+  friend void swap(GetBytesReply& a, GetBytesReply& b) {
     a.Swap(&b);
   }
-  inline void Swap(HelloReply* other) {
+  inline void Swap(GetBytesReply* other) {
     if (other == this) return;
     if (GetOwningArena() == other->GetOwningArena()) {
       InternalSwap(other);
@@ -579,7 +574,7 @@ class HelloReply final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(HelloReply* other) {
+  void UnsafeArenaSwap(GetBytesReply* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -587,17 +582,17 @@ class HelloReply final :
 
   // implements Message ----------------------------------------------
 
-  inline HelloReply* New() const final {
-    return new HelloReply();
+  inline GetBytesReply* New() const final {
+    return new GetBytesReply();
   }
 
-  HelloReply* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<HelloReply>(arena);
+  GetBytesReply* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<GetBytesReply>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const HelloReply& from);
+  void CopyFrom(const GetBytesReply& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom(const HelloReply& from);
+  void MergeFrom(const GetBytesReply& from);
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
   public:
@@ -614,13 +609,13 @@ class HelloReply final :
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(HelloReply* other);
+  void InternalSwap(GetBytesReply* other);
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "HelloReply";
+    return "GetBytesReply";
   }
   protected:
-  explicit HelloReply(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit GetBytesReply(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   private:
   static void ArenaDtor(void* object);
@@ -637,30 +632,41 @@ class HelloReply final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kMessageFieldNumber = 1,
+    kDataFieldNumber = 1,
+    kDroppedBytesFieldNumber = 2,
   };
-  // string message = 1;
-  void clear_message();
-  const std::string& message() const;
+  // bytes data = 1;
+  void clear_data();
+  const std::string& data() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_message(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_message();
-  PROTOBUF_MUST_USE_RESULT std::string* release_message();
-  void set_allocated_message(std::string* message);
+  void set_data(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_data();
+  PROTOBUF_MUST_USE_RESULT std::string* release_data();
+  void set_allocated_data(std::string* data);
   private:
-  const std::string& _internal_message() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_message(const std::string& value);
-  std::string* _internal_mutable_message();
+  const std::string& _internal_data() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_data(const std::string& value);
+  std::string* _internal_mutable_data();
   public:
 
-  // @@protoc_insertion_point(class_scope:HelloReply)
+  // int32 droppedBytes = 2;
+  void clear_droppedbytes();
+  ::PROTOBUF_NAMESPACE_ID::int32 droppedbytes() const;
+  void set_droppedbytes(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_droppedbytes() const;
+  void _internal_set_droppedbytes(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:GetBytesReply)
  private:
   class _Internal;
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
+  ::PROTOBUF_NAMESPACE_ID::int32 droppedbytes_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_grpc_2fservice_2eproto;
 };
@@ -773,102 +779,96 @@ inline void CommandReply::set_allocated_reply(std::string* reply) {
 
 // -------------------------------------------------------------------
 
-// HelloRequest
+// GetBytesRequest
 
-// string name = 1;
-inline void HelloRequest::clear_name() {
-  name_.ClearToEmpty();
+// int32 id = 1;
+inline void GetBytesRequest::clear_id() {
+  id_ = 0;
 }
-inline const std::string& HelloRequest::name() const {
-  // @@protoc_insertion_point(field_get:HelloRequest.name)
-  return _internal_name();
+inline ::PROTOBUF_NAMESPACE_ID::int32 GetBytesRequest::_internal_id() const {
+  return id_;
 }
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void HelloRequest::set_name(ArgT0&& arg0, ArgT... args) {
- 
- name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:HelloRequest.name)
+inline ::PROTOBUF_NAMESPACE_ID::int32 GetBytesRequest::id() const {
+  // @@protoc_insertion_point(field_get:GetBytesRequest.id)
+  return _internal_id();
 }
-inline std::string* HelloRequest::mutable_name() {
-  std::string* _s = _internal_mutable_name();
-  // @@protoc_insertion_point(field_mutable:HelloRequest.name)
-  return _s;
-}
-inline const std::string& HelloRequest::_internal_name() const {
-  return name_.Get();
-}
-inline void HelloRequest::_internal_set_name(const std::string& value) {
+inline void GetBytesRequest::_internal_set_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
-  name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+  id_ = value;
 }
-inline std::string* HelloRequest::_internal_mutable_name() {
-  
-  return name_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
-}
-inline std::string* HelloRequest::release_name() {
-  // @@protoc_insertion_point(field_release:HelloRequest.name)
-  return name_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
-}
-inline void HelloRequest::set_allocated_name(std::string* name) {
-  if (name != nullptr) {
-    
-  } else {
-    
-  }
-  name_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), name,
-      GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set_allocated:HelloRequest.name)
+inline void GetBytesRequest::set_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_id(value);
+  // @@protoc_insertion_point(field_set:GetBytesRequest.id)
 }
 
 // -------------------------------------------------------------------
 
-// HelloReply
+// GetBytesReply
 
-// string message = 1;
-inline void HelloReply::clear_message() {
-  message_.ClearToEmpty();
+// bytes data = 1;
+inline void GetBytesReply::clear_data() {
+  data_.ClearToEmpty();
 }
-inline const std::string& HelloReply::message() const {
-  // @@protoc_insertion_point(field_get:HelloReply.message)
-  return _internal_message();
+inline const std::string& GetBytesReply::data() const {
+  // @@protoc_insertion_point(field_get:GetBytesReply.data)
+  return _internal_data();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void HelloReply::set_message(ArgT0&& arg0, ArgT... args) {
+void GetBytesReply::set_data(ArgT0&& arg0, ArgT... args) {
  
- message_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:HelloReply.message)
+ data_.SetBytes(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:GetBytesReply.data)
 }
-inline std::string* HelloReply::mutable_message() {
-  std::string* _s = _internal_mutable_message();
-  // @@protoc_insertion_point(field_mutable:HelloReply.message)
+inline std::string* GetBytesReply::mutable_data() {
+  std::string* _s = _internal_mutable_data();
+  // @@protoc_insertion_point(field_mutable:GetBytesReply.data)
   return _s;
 }
-inline const std::string& HelloReply::_internal_message() const {
-  return message_.Get();
+inline const std::string& GetBytesReply::_internal_data() const {
+  return data_.Get();
 }
-inline void HelloReply::_internal_set_message(const std::string& value) {
+inline void GetBytesReply::_internal_set_data(const std::string& value) {
   
-  message_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+  data_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
 }
-inline std::string* HelloReply::_internal_mutable_message() {
+inline std::string* GetBytesReply::_internal_mutable_data() {
   
-  return message_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+  return data_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
 }
-inline std::string* HelloReply::release_message() {
-  // @@protoc_insertion_point(field_release:HelloReply.message)
-  return message_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+inline std::string* GetBytesReply::release_data() {
+  // @@protoc_insertion_point(field_release:GetBytesReply.data)
+  return data_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
 }
-inline void HelloReply::set_allocated_message(std::string* message) {
-  if (message != nullptr) {
+inline void GetBytesReply::set_allocated_data(std::string* data) {
+  if (data != nullptr) {
     
   } else {
     
   }
-  message_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), message,
+  data_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), data,
       GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set_allocated:HelloReply.message)
+  // @@protoc_insertion_point(field_set_allocated:GetBytesReply.data)
+}
+
+// int32 droppedBytes = 2;
+inline void GetBytesReply::clear_droppedbytes() {
+  droppedbytes_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 GetBytesReply::_internal_droppedbytes() const {
+  return droppedbytes_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 GetBytesReply::droppedbytes() const {
+  // @@protoc_insertion_point(field_get:GetBytesReply.droppedBytes)
+  return _internal_droppedbytes();
+}
+inline void GetBytesReply::_internal_set_droppedbytes(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  droppedbytes_ = value;
+}
+inline void GetBytesReply::set_droppedbytes(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_droppedbytes(value);
+  // @@protoc_insertion_point(field_set:GetBytesReply.droppedBytes)
 }
 
 #ifdef __GNUC__

@@ -35,14 +35,7 @@ class Greeter final {
   class StubInterface {
    public:
     virtual ~StubInterface() {}
-    // Sends a greeting
-    virtual ::grpc::Status SayHello(::grpc::ClientContext* context, const ::HelloRequest& request, ::HelloReply* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::HelloReply>> AsyncSayHello(::grpc::ClientContext* context, const ::HelloRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::HelloReply>>(AsyncSayHelloRaw(context, request, cq));
-    }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::HelloReply>> PrepareAsyncSayHello(::grpc::ClientContext* context, const ::HelloRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::HelloReply>>(PrepareAsyncSayHelloRaw(context, request, cq));
-    }
+    // Send command and get a reply
     virtual ::grpc::Status Command(::grpc::ClientContext* context, const ::CommandRequest& request, ::CommandReply* response) = 0;
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::CommandReply>> AsyncCommand(::grpc::ClientContext* context, const ::CommandRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::CommandReply>>(AsyncCommandRaw(context, request, cq));
@@ -50,21 +43,30 @@ class Greeter final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::CommandReply>> PrepareAsyncCommand(::grpc::ClientContext* context, const ::CommandRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::CommandReply>>(PrepareAsyncCommandRaw(context, request, cq));
     }
+    // Get bytes of the specified id
+    virtual ::grpc::Status GetBytes(::grpc::ClientContext* context, const ::GetBytesRequest& request, ::GetBytesReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::GetBytesReply>> AsyncGetBytes(::grpc::ClientContext* context, const ::GetBytesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::GetBytesReply>>(AsyncGetBytesRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::GetBytesReply>> PrepareAsyncGetBytes(::grpc::ClientContext* context, const ::GetBytesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::GetBytesReply>>(PrepareAsyncGetBytesRaw(context, request, cq));
+    }
     class experimental_async_interface {
      public:
       virtual ~experimental_async_interface() {}
-      // Sends a greeting
-      virtual void SayHello(::grpc::ClientContext* context, const ::HelloRequest* request, ::HelloReply* response, std::function<void(::grpc::Status)>) = 0;
-      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      virtual void SayHello(::grpc::ClientContext* context, const ::HelloRequest* request, ::HelloReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
-      #else
-      virtual void SayHello(::grpc::ClientContext* context, const ::HelloRequest* request, ::HelloReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
-      #endif
+      // Send command and get a reply
       virtual void Command(::grpc::ClientContext* context, const ::CommandRequest* request, ::CommandReply* response, std::function<void(::grpc::Status)>) = 0;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       virtual void Command(::grpc::ClientContext* context, const ::CommandRequest* request, ::CommandReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       #else
       virtual void Command(::grpc::ClientContext* context, const ::CommandRequest* request, ::CommandReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      // Get bytes of the specified id
+      virtual void GetBytes(::grpc::ClientContext* context, const ::GetBytesRequest* request, ::GetBytesReply* response, std::function<void(::grpc::Status)>) = 0;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void GetBytes(::grpc::ClientContext* context, const ::GetBytesRequest* request, ::GetBytesReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void GetBytes(::grpc::ClientContext* context, const ::GetBytesRequest* request, ::GetBytesReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
     };
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -75,21 +77,14 @@ class Greeter final {
     #endif
     virtual class experimental_async_interface* experimental_async() { return nullptr; }
   private:
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::HelloReply>* AsyncSayHelloRaw(::grpc::ClientContext* context, const ::HelloRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::HelloReply>* PrepareAsyncSayHelloRaw(::grpc::ClientContext* context, const ::HelloRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::CommandReply>* AsyncCommandRaw(::grpc::ClientContext* context, const ::CommandRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::CommandReply>* PrepareAsyncCommandRaw(::grpc::ClientContext* context, const ::CommandRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::GetBytesReply>* AsyncGetBytesRaw(::grpc::ClientContext* context, const ::GetBytesRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::GetBytesReply>* PrepareAsyncGetBytesRaw(::grpc::ClientContext* context, const ::GetBytesRequest& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
     Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel);
-    ::grpc::Status SayHello(::grpc::ClientContext* context, const ::HelloRequest& request, ::HelloReply* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::HelloReply>> AsyncSayHello(::grpc::ClientContext* context, const ::HelloRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::HelloReply>>(AsyncSayHelloRaw(context, request, cq));
-    }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::HelloReply>> PrepareAsyncSayHello(::grpc::ClientContext* context, const ::HelloRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::HelloReply>>(PrepareAsyncSayHelloRaw(context, request, cq));
-    }
     ::grpc::Status Command(::grpc::ClientContext* context, const ::CommandRequest& request, ::CommandReply* response) override;
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::CommandReply>> AsyncCommand(::grpc::ClientContext* context, const ::CommandRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::CommandReply>>(AsyncCommandRaw(context, request, cq));
@@ -97,20 +92,27 @@ class Greeter final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::CommandReply>> PrepareAsyncCommand(::grpc::ClientContext* context, const ::CommandRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::CommandReply>>(PrepareAsyncCommandRaw(context, request, cq));
     }
+    ::grpc::Status GetBytes(::grpc::ClientContext* context, const ::GetBytesRequest& request, ::GetBytesReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::GetBytesReply>> AsyncGetBytes(::grpc::ClientContext* context, const ::GetBytesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::GetBytesReply>>(AsyncGetBytesRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::GetBytesReply>> PrepareAsyncGetBytes(::grpc::ClientContext* context, const ::GetBytesRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::GetBytesReply>>(PrepareAsyncGetBytesRaw(context, request, cq));
+    }
     class experimental_async final :
       public StubInterface::experimental_async_interface {
      public:
-      void SayHello(::grpc::ClientContext* context, const ::HelloRequest* request, ::HelloReply* response, std::function<void(::grpc::Status)>) override;
-      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      void SayHello(::grpc::ClientContext* context, const ::HelloRequest* request, ::HelloReply* response, ::grpc::ClientUnaryReactor* reactor) override;
-      #else
-      void SayHello(::grpc::ClientContext* context, const ::HelloRequest* request, ::HelloReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
-      #endif
       void Command(::grpc::ClientContext* context, const ::CommandRequest* request, ::CommandReply* response, std::function<void(::grpc::Status)>) override;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       void Command(::grpc::ClientContext* context, const ::CommandRequest* request, ::CommandReply* response, ::grpc::ClientUnaryReactor* reactor) override;
       #else
       void Command(::grpc::ClientContext* context, const ::CommandRequest* request, ::CommandReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      void GetBytes(::grpc::ClientContext* context, const ::GetBytesRequest* request, ::GetBytesReply* response, std::function<void(::grpc::Status)>) override;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void GetBytes(::grpc::ClientContext* context, const ::GetBytesRequest* request, ::GetBytesReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void GetBytes(::grpc::ClientContext* context, const ::GetBytesRequest* request, ::GetBytesReply* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
      private:
       friend class Stub;
@@ -123,12 +125,12 @@ class Greeter final {
    private:
     std::shared_ptr< ::grpc::ChannelInterface> channel_;
     class experimental_async async_stub_{this};
-    ::grpc::ClientAsyncResponseReader< ::HelloReply>* AsyncSayHelloRaw(::grpc::ClientContext* context, const ::HelloRequest& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::HelloReply>* PrepareAsyncSayHelloRaw(::grpc::ClientContext* context, const ::HelloRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::CommandReply>* AsyncCommandRaw(::grpc::ClientContext* context, const ::CommandRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::CommandReply>* PrepareAsyncCommandRaw(::grpc::ClientContext* context, const ::CommandRequest& request, ::grpc::CompletionQueue* cq) override;
-    const ::grpc::internal::RpcMethod rpcmethod_SayHello_;
+    ::grpc::ClientAsyncResponseReader< ::GetBytesReply>* AsyncGetBytesRaw(::grpc::ClientContext* context, const ::GetBytesRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::GetBytesReply>* PrepareAsyncGetBytesRaw(::grpc::ClientContext* context, const ::GetBytesRequest& request, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_Command_;
+    const ::grpc::internal::RpcMethod rpcmethod_GetBytes_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -136,29 +138,10 @@ class Greeter final {
    public:
     Service();
     virtual ~Service();
-    // Sends a greeting
-    virtual ::grpc::Status SayHello(::grpc::ServerContext* context, const ::HelloRequest* request, ::HelloReply* response);
+    // Send command and get a reply
     virtual ::grpc::Status Command(::grpc::ServerContext* context, const ::CommandRequest* request, ::CommandReply* response);
-  };
-  template <class BaseClass>
-  class WithAsyncMethod_SayHello : public BaseClass {
-   private:
-    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
-   public:
-    WithAsyncMethod_SayHello() {
-      ::grpc::Service::MarkMethodAsync(0);
-    }
-    ~WithAsyncMethod_SayHello() override {
-      BaseClassMustBeDerivedFromService(this);
-    }
-    // disable synchronous version of this method
-    ::grpc::Status SayHello(::grpc::ServerContext* /*context*/, const ::HelloRequest* /*request*/, ::HelloReply* /*response*/) override {
-      abort();
-      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
-    }
-    void RequestSayHello(::grpc::ServerContext* context, ::HelloRequest* request, ::grpc::ServerAsyncResponseWriter< ::HelloReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
-    }
+    // Get bytes of the specified id
+    virtual ::grpc::Status GetBytes(::grpc::ServerContext* context, const ::GetBytesRequest* request, ::GetBytesReply* response);
   };
   template <class BaseClass>
   class WithAsyncMethod_Command : public BaseClass {
@@ -166,7 +149,7 @@ class Greeter final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_Command() {
-      ::grpc::Service::MarkMethodAsync(1);
+      ::grpc::Service::MarkMethodAsync(0);
     }
     ~WithAsyncMethod_Command() override {
       BaseClassMustBeDerivedFromService(this);
@@ -177,57 +160,30 @@ class Greeter final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestCommand(::grpc::ServerContext* context, ::CommandRequest* request, ::grpc::ServerAsyncResponseWriter< ::CommandReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_SayHello<WithAsyncMethod_Command<Service > > AsyncService;
   template <class BaseClass>
-  class ExperimentalWithCallbackMethod_SayHello : public BaseClass {
+  class WithAsyncMethod_GetBytes : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    ExperimentalWithCallbackMethod_SayHello() {
-    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      ::grpc::Service::
-    #else
-      ::grpc::Service::experimental().
-    #endif
-        MarkMethodCallback(0,
-          new ::grpc::internal::CallbackUnaryHandler< ::HelloRequest, ::HelloReply>(
-            [this](
-    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-                   ::grpc::CallbackServerContext*
-    #else
-                   ::grpc::experimental::CallbackServerContext*
-    #endif
-                     context, const ::HelloRequest* request, ::HelloReply* response) { return this->SayHello(context, request, response); }));}
-    void SetMessageAllocatorFor_SayHello(
-        ::grpc::experimental::MessageAllocator< ::HelloRequest, ::HelloReply>* allocator) {
-    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(0);
-    #else
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(0);
-    #endif
-      static_cast<::grpc::internal::CallbackUnaryHandler< ::HelloRequest, ::HelloReply>*>(handler)
-              ->SetMessageAllocator(allocator);
+    WithAsyncMethod_GetBytes() {
+      ::grpc::Service::MarkMethodAsync(1);
     }
-    ~ExperimentalWithCallbackMethod_SayHello() override {
+    ~WithAsyncMethod_GetBytes() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status SayHello(::grpc::ServerContext* /*context*/, const ::HelloRequest* /*request*/, ::HelloReply* /*response*/) override {
+    ::grpc::Status GetBytes(::grpc::ServerContext* /*context*/, const ::GetBytesRequest* /*request*/, ::GetBytesReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-    virtual ::grpc::ServerUnaryReactor* SayHello(
-      ::grpc::CallbackServerContext* /*context*/, const ::HelloRequest* /*request*/, ::HelloReply* /*response*/)
-    #else
-    virtual ::grpc::experimental::ServerUnaryReactor* SayHello(
-      ::grpc::experimental::CallbackServerContext* /*context*/, const ::HelloRequest* /*request*/, ::HelloReply* /*response*/)
-    #endif
-      { return nullptr; }
+    void RequestGetBytes(::grpc::ServerContext* context, ::GetBytesRequest* request, ::grpc::ServerAsyncResponseWriter< ::GetBytesReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
   };
+  typedef WithAsyncMethod_Command<WithAsyncMethod_GetBytes<Service > > AsyncService;
   template <class BaseClass>
   class ExperimentalWithCallbackMethod_Command : public BaseClass {
    private:
@@ -239,7 +195,7 @@ class Greeter final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodCallback(1,
+        MarkMethodCallback(0,
           new ::grpc::internal::CallbackUnaryHandler< ::CommandRequest, ::CommandReply>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -251,9 +207,9 @@ class Greeter final {
     void SetMessageAllocatorFor_Command(
         ::grpc::experimental::MessageAllocator< ::CommandRequest, ::CommandReply>* allocator) {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(1);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(0);
     #else
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(1);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(0);
     #endif
       static_cast<::grpc::internal::CallbackUnaryHandler< ::CommandRequest, ::CommandReply>*>(handler)
               ->SetMessageAllocator(allocator);
@@ -275,35 +231,65 @@ class Greeter final {
     #endif
       { return nullptr; }
   };
-  #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-  typedef ExperimentalWithCallbackMethod_SayHello<ExperimentalWithCallbackMethod_Command<Service > > CallbackService;
-  #endif
-
-  typedef ExperimentalWithCallbackMethod_SayHello<ExperimentalWithCallbackMethod_Command<Service > > ExperimentalCallbackService;
   template <class BaseClass>
-  class WithGenericMethod_SayHello : public BaseClass {
+  class ExperimentalWithCallbackMethod_GetBytes : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithGenericMethod_SayHello() {
-      ::grpc::Service::MarkMethodGeneric(0);
+    ExperimentalWithCallbackMethod_GetBytes() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodCallback(1,
+          new ::grpc::internal::CallbackUnaryHandler< ::GetBytesRequest, ::GetBytesReply>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::GetBytesRequest* request, ::GetBytesReply* response) { return this->GetBytes(context, request, response); }));}
+    void SetMessageAllocatorFor_GetBytes(
+        ::grpc::experimental::MessageAllocator< ::GetBytesRequest, ::GetBytesReply>* allocator) {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(1);
+    #else
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(1);
+    #endif
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::GetBytesRequest, ::GetBytesReply>*>(handler)
+              ->SetMessageAllocator(allocator);
     }
-    ~WithGenericMethod_SayHello() override {
+    ~ExperimentalWithCallbackMethod_GetBytes() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status SayHello(::grpc::ServerContext* /*context*/, const ::HelloRequest* /*request*/, ::HelloReply* /*response*/) override {
+    ::grpc::Status GetBytes(::grpc::ServerContext* /*context*/, const ::GetBytesRequest* /*request*/, ::GetBytesReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* GetBytes(
+      ::grpc::CallbackServerContext* /*context*/, const ::GetBytesRequest* /*request*/, ::GetBytesReply* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* GetBytes(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::GetBytesRequest* /*request*/, ::GetBytesReply* /*response*/)
+    #endif
+      { return nullptr; }
   };
+  #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+  typedef ExperimentalWithCallbackMethod_Command<ExperimentalWithCallbackMethod_GetBytes<Service > > CallbackService;
+  #endif
+
+  typedef ExperimentalWithCallbackMethod_Command<ExperimentalWithCallbackMethod_GetBytes<Service > > ExperimentalCallbackService;
   template <class BaseClass>
   class WithGenericMethod_Command : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_Command() {
-      ::grpc::Service::MarkMethodGeneric(1);
+      ::grpc::Service::MarkMethodGeneric(0);
     }
     ~WithGenericMethod_Command() override {
       BaseClassMustBeDerivedFromService(this);
@@ -315,23 +301,20 @@ class Greeter final {
     }
   };
   template <class BaseClass>
-  class WithRawMethod_SayHello : public BaseClass {
+  class WithGenericMethod_GetBytes : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithRawMethod_SayHello() {
-      ::grpc::Service::MarkMethodRaw(0);
+    WithGenericMethod_GetBytes() {
+      ::grpc::Service::MarkMethodGeneric(1);
     }
-    ~WithRawMethod_SayHello() override {
+    ~WithGenericMethod_GetBytes() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status SayHello(::grpc::ServerContext* /*context*/, const ::HelloRequest* /*request*/, ::HelloReply* /*response*/) override {
+    ::grpc::Status GetBytes(::grpc::ServerContext* /*context*/, const ::GetBytesRequest* /*request*/, ::GetBytesReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
-    }
-    void RequestSayHello(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -340,7 +323,7 @@ class Greeter final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_Command() {
-      ::grpc::Service::MarkMethodRaw(1);
+      ::grpc::Service::MarkMethodRaw(0);
     }
     ~WithRawMethod_Command() override {
       BaseClassMustBeDerivedFromService(this);
@@ -351,46 +334,28 @@ class Greeter final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestCommand(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
-  class ExperimentalWithRawCallbackMethod_SayHello : public BaseClass {
+  class WithRawMethod_GetBytes : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    ExperimentalWithRawCallbackMethod_SayHello() {
-    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      ::grpc::Service::
-    #else
-      ::grpc::Service::experimental().
-    #endif
-        MarkMethodRawCallback(0,
-          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
-            [this](
-    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-                   ::grpc::CallbackServerContext*
-    #else
-                   ::grpc::experimental::CallbackServerContext*
-    #endif
-                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->SayHello(context, request, response); }));
+    WithRawMethod_GetBytes() {
+      ::grpc::Service::MarkMethodRaw(1);
     }
-    ~ExperimentalWithRawCallbackMethod_SayHello() override {
+    ~WithRawMethod_GetBytes() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status SayHello(::grpc::ServerContext* /*context*/, const ::HelloRequest* /*request*/, ::HelloReply* /*response*/) override {
+    ::grpc::Status GetBytes(::grpc::ServerContext* /*context*/, const ::GetBytesRequest* /*request*/, ::GetBytesReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-    virtual ::grpc::ServerUnaryReactor* SayHello(
-      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
-    #else
-    virtual ::grpc::experimental::ServerUnaryReactor* SayHello(
-      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
-    #endif
-      { return nullptr; }
+    void RequestGetBytes(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
   };
   template <class BaseClass>
   class ExperimentalWithRawCallbackMethod_Command : public BaseClass {
@@ -403,7 +368,7 @@ class Greeter final {
     #else
       ::grpc::Service::experimental().
     #endif
-        MarkMethodRawCallback(1,
+        MarkMethodRawCallback(0,
           new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
@@ -431,31 +396,42 @@ class Greeter final {
       { return nullptr; }
   };
   template <class BaseClass>
-  class WithStreamedUnaryMethod_SayHello : public BaseClass {
+  class ExperimentalWithRawCallbackMethod_GetBytes : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithStreamedUnaryMethod_SayHello() {
-      ::grpc::Service::MarkMethodStreamed(0,
-        new ::grpc::internal::StreamedUnaryHandler<
-          ::HelloRequest, ::HelloReply>(
-            [this](::grpc::ServerContext* context,
-                   ::grpc::ServerUnaryStreamer<
-                     ::HelloRequest, ::HelloReply>* streamer) {
-                       return this->StreamedSayHello(context,
-                         streamer);
-                  }));
+    ExperimentalWithRawCallbackMethod_GetBytes() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodRawCallback(1,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->GetBytes(context, request, response); }));
     }
-    ~WithStreamedUnaryMethod_SayHello() override {
+    ~ExperimentalWithRawCallbackMethod_GetBytes() override {
       BaseClassMustBeDerivedFromService(this);
     }
-    // disable regular version of this method
-    ::grpc::Status SayHello(::grpc::ServerContext* /*context*/, const ::HelloRequest* /*request*/, ::HelloReply* /*response*/) override {
+    // disable synchronous version of this method
+    ::grpc::Status GetBytes(::grpc::ServerContext* /*context*/, const ::GetBytesRequest* /*request*/, ::GetBytesReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedSayHello(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::HelloRequest,::HelloReply>* server_unary_streamer) = 0;
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* GetBytes(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* GetBytes(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #endif
+      { return nullptr; }
   };
   template <class BaseClass>
   class WithStreamedUnaryMethod_Command : public BaseClass {
@@ -463,7 +439,7 @@ class Greeter final {
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithStreamedUnaryMethod_Command() {
-      ::grpc::Service::MarkMethodStreamed(1,
+      ::grpc::Service::MarkMethodStreamed(0,
         new ::grpc::internal::StreamedUnaryHandler<
           ::CommandRequest, ::CommandReply>(
             [this](::grpc::ServerContext* context,
@@ -484,9 +460,36 @@ class Greeter final {
     // replace default version of method with streamed unary
     virtual ::grpc::Status StreamedCommand(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::CommandRequest,::CommandReply>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_SayHello<WithStreamedUnaryMethod_Command<Service > > StreamedUnaryService;
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_GetBytes : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_GetBytes() {
+      ::grpc::Service::MarkMethodStreamed(1,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::GetBytesRequest, ::GetBytesReply>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::GetBytesRequest, ::GetBytesReply>* streamer) {
+                       return this->StreamedGetBytes(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_GetBytes() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status GetBytes(::grpc::ServerContext* /*context*/, const ::GetBytesRequest* /*request*/, ::GetBytesReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedGetBytes(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::GetBytesRequest,::GetBytesReply>* server_unary_streamer) = 0;
+  };
+  typedef WithStreamedUnaryMethod_Command<WithStreamedUnaryMethod_GetBytes<Service > > StreamedUnaryService;
   typedef Service SplitStreamedService;
-  typedef WithStreamedUnaryMethod_SayHello<WithStreamedUnaryMethod_Command<Service > > StreamedService;
+  typedef WithStreamedUnaryMethod_Command<WithStreamedUnaryMethod_GetBytes<Service > > StreamedService;
 };
 
 
