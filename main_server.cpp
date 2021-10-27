@@ -1,6 +1,10 @@
 #include <QtCore>
 #include <windows.h>	// только для замера скорости с помощью getTickCount64
 
+
+#include <grpcpp/server_builder.h>
+#include "grpc/service.grpc.pb.h"
+
 // TODO
 //
 // часть ввода
@@ -20,6 +24,20 @@
 // - может получать весь поток байтов любого потока на выбор
 // - можно контролирвоать также и здесь этот счетчик просто пока что
 // - клиент запускается через командную строку и указывается id потока, который он получает
+
+class GRPCServiceImpl final : public Greeter::Service
+{
+	grpc::Status SayHello(grpc::ServerContext* context, const HelloRequest* request, HelloReply* response) override
+	{
+		QString request_string = request->name().c_str();
+		request_string.append("added by server");
+		response->set_message(request_string.toStdString());
+		return grpc::Status::OK;
+	}
+public:
+	GRPCServiceImpl(){}
+	~GRPCServiceImpl(){}
+};
 
 
 // класс-поток процессора обработки, для примера делаю так, что каждый входной поток обрабатывается в отдельном потоке
@@ -115,6 +133,19 @@ public:
 // самая важная структура сервера, хранит в себе процессоры обраотки и все все все
 struct ServerStruct
 {
+	ServerStruct()
+	{
+		std::string server_address("0.0.0.0:50051");
+		GRPCServiceImpl service;
+		
+		grpc::ServerBuilder builder;
+		builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
+		builder.RegisterService(&service);
+		std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
+		std::cout << "Server listening on " << server_address << std::endl;
+		server->Wait();
+	}
+	
 	// хэш обрабатываемых id потоков и лок для работы с ним
 	QHash< int, ProcessorThread* > m_ProcessorHash;
 	QReadWriteLock m_ProcessorHashLock;
@@ -218,6 +249,8 @@ class InputThread : public QThread
 						
 						// TODO сделать какую-то обработку переполнения очереди обработчика?
 						// типа если очередь больше 100 пакетов или что-то около того, пересчитать на байты там...
+						// в рабочем софте офк надо, здесь не буду делать
+						// соотсветственно, под эти случаи нужно заводить счетчики ошибок как в процессорах
 					}
 					
 					// дальше большой вопрос о том, как сообщать потоку обработчику о поступлении новых данных
